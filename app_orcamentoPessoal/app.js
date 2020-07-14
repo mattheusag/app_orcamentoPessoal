@@ -60,6 +60,45 @@ class Bd {
         }
         return despesas
     }
+
+    pesquisar(despesa){
+        let despesasFiltradas = Array()
+        despesasFiltradas = this.recuperarTodosRegistros()
+
+        console.log(despesasFiltradas)
+        console.log(despesa)
+
+        //ano
+        if(despesa.ano != ''){
+            despesasFiltradas = despesasFiltradas.filter(d => d.ano == despesa.ano)
+            /* despesasFiltradas.filter(function(d){
+                return d.ano == despesa.ano // retornando true ou false
+            })*/
+        }
+        
+        //mes
+        if(despesa.mes != ''){
+            despesasFiltradas = despesasFiltradas.filter(d => d.mes == despesa.mes)
+        }
+        //dia
+        if(despesa.dia != ''){
+            despesasFiltradas = despesasFiltradas.filter(d => d.dia == despesa.dia)
+        }
+        //tipo
+        if(despesa.tipo != ''){
+            despesasFiltradas = despesasFiltradas.filter(d => d.tipo == despesa.tipo)
+        }
+        //descrição
+        if(despesa.descricao != ''){
+            despesasFiltradas = despesasFiltradas.filter(d => d.descricao == despesa.descricao)
+        }
+        //descrição
+        if(despesa.valor != ''){
+            despesasFiltradas = despesasFiltradas.filter(d => d.valor == despesa.valor)
+        }
+
+        return despesasFiltradas
+    }
 }
 
 let bd = new Bd()
@@ -108,15 +147,13 @@ function cadastrarDespesa(){
         }
 }
 
-function carregaListaDespesas(){
-
-    let despesas = Array()
-    
+function carregaListaDespesas(despesas = Array(), filtro = false){
+    if(despesas.length == 0 && filtro == false){
     despesas = bd.recuperarTodosRegistros()
-    console.log(despesas)
+    }
     // selecionando elemento tbody da tabela
     let listaDespesas = document.getElementById("listaDespesas")
-
+    listaDespesas.innerHTML = ""
     /*
     <tr>
         0 = <td>15/08/2020</td>
@@ -129,7 +166,7 @@ function carregaListaDespesas(){
     //percorrer o array despesas, listando cada despesa de forma dinamica
     despesas.forEach(function(d){
         
-        console.log(d)
+        
         //criando a linha (tr)
         let linha = listaDespesas.insertRow() 
 
@@ -161,4 +198,19 @@ function carregaListaDespesas(){
 
     })
 
+}
+
+function pesquisarDespesas(){
+    let ano = document.getElementById('ano').value
+    let mes = document.getElementById('mes').value
+    let dia = document.getElementById('dia').value
+    let tipo = document.getElementById('tipo').value
+    let descricao = document.getElementById('descricao').value
+    let valor = document.getElementById('valor').value
+
+    let despesa = new Despesa(ano, mes, dia, tipo, descricao, valor)
+
+    let despesas = bd.pesquisar(despesa)
+    
+    carregaListaDespesas(despesas, true)
 }
