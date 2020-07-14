@@ -7,8 +7,42 @@ class Despesa {
         this.descricao = descricao
         this.valor = valor
     }
+
+    validarDados(){
+        for(let i in this){
+            if(this[i] == undefined || this[i] == '' || this[i] == null) {
+                return false
+            } else
+                return true
+        }
+    }
 }
 
+
+class Bd {
+    constructor(){
+        let id = localStorage.getItem('id')
+
+        if (id === null){
+            localStorage.setItem('id', 0)
+        }
+    }
+
+    getProximoId(){
+        let proximoId = localStorage.getItem('id') 
+        return parseInt(proximoId) + 1
+    }
+
+    gravar(d){
+        let id = this.getProximoId()
+
+        localStorage.setItem(id, JSON.stringify(d)) 
+
+        localStorage.setItem('id', id)
+    }
+}
+
+let bd = new Bd()
 
 
 function cadastrarDespesa(){
@@ -27,11 +61,14 @@ function cadastrarDespesa(){
         descricao, 
         valor
     )
-        gravar(despesa)
+        if (despesa.validarDados()){
+        bd.gravar(despesa)
+        // dialog de sucesso
+        $('#sucessoGravacao').modal('show')
+        
+    } else {
+        // dialog de erro
+        console.log("Dados Invalidos")
+        $('#erroGravacao').modal('show')
+    }
 }
-
-function gravar(d){
-    localStorage.setItem('despesa', JSON.stringify(d))  // Para acessar o local storage do browser, set item permite passar 2 parametros, a identificação do objeto e o dado que queremos armazenar, este dado precisa ser repassado em JSON. Sendo que temos que transformar o objeto literal em uma notação JSON, faremos isso com objeto JSON
-}
-
-
